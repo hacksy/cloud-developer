@@ -16,4 +16,6 @@ export class FeedItem extends Model<FeedItem> {
   @Column
   @UpdatedAt
   public updatedAt: Date = new Date();
+
+  public tempUrl!:string;
 }

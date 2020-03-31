@@ -11,6 +11,7 @@ router.get('/', async (req: Request, res: Response) => {
     items.rows.map((item) => {
             if(item.url) {
                 item.url = AWS.getGetSignedUrl(item.url);
+                item.tempUrl = item.url;
             }
     });
     res.send(items);
