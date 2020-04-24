@@ -15,8 +15,41 @@ exports.handler = async (event) => {
   let requestWasSuccessful
 
   const startTime = timeInMs()
-  await axios.get(url)
+  try{
+    await axios.get(url)  
+    requestWasSuccessful=true
+  }catch(err) {
+    requestWasSuccessful=false
+  }
+  
+  const endTime = timeInMs()
 
+  await cloudwatch.putMetricData({
+    MetricName: 'Success',
+     MetricData: [ // A list of data points to send
+    {
+    Dimensions: [ // A list of key-value pairs that can be used to filter metrics from CloudWatch
+        {
+          Name: 'PingName',
+          Value: serviceName
+        }
+      ],
+      Unit: 'Count', // Unit of a metric
+      Value: value // Value of a metric to store
+    },
+    {
+    Dimensions: [ // A list of key-value pairs that can be used to filter metrics from CloudWatch
+        {
+          Name: 'PingTime',
+          Value: serviceName
+        }
+      ],
+      Unit: 'Time', // Unit of a metric
+      Value: endTime - startTime // Value of a metric to store
+    }
+  ],
+  Namespace: 'Udacity/Serveless'
+  }).promise()
   // Example of how to write a single data point
   // await cloudwatch.putMetricData({
   //   MetricData: [
