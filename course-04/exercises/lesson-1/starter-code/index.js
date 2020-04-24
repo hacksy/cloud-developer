@@ -25,10 +25,10 @@ exports.handler = async (event) => {
   endTime = timeInMs()
 
   await cloudwatch.putMetricData({
-     MetricData: [ // A list of data points to send
-         MetricName: 'Success',
+     MetricData: [ // A list of data points to sen
 
     {
+       MetricName: 'Success',
     Dimensions: [ // A list of key-value pairs that can be used to filter metrics from CloudWatch
         {
           Name: 'PingName',
