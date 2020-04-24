@@ -13,7 +13,7 @@ exports.handler = async (event) => {
   const parsedBody = JSON.parse(event.body)
 
   const newItem = {
-    id: itemId,
+    ID: itemId,
     ...parsedBody
   }
 
