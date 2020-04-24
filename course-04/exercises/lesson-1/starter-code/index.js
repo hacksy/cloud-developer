@@ -47,7 +47,7 @@ exports.handler = async (event) => {
           Value: serviceName
         }
       ],
-      Unit: 'Time', // Unit of a metric
+      Unit: 'Milliseconds', // Unit of a metric
       Value: endTime - startTime // Value of a metric to store
     }
   ],
