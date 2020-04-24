@@ -39,6 +39,8 @@ exports.handler = async (event) => {
       Value: requestWasSuccessful?1:0 // Value of a metric to store
     },
     {
+             MetricName: 'Time',
+
     Dimensions: [ // A list of key-value pairs that can be used to filter metrics from CloudWatch
         {
           Name: 'PingTime',
