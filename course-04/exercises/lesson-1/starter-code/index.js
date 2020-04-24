@@ -35,7 +35,7 @@ exports.handler = async (event) => {
         }
       ],
       Unit: 'Count', // Unit of a metric
-      Value: value // Value of a metric to store
+      Value: requestWasSuccessful // Value of a metric to store
     },
     {
     Dimensions: [ // A list of key-value pairs that can be used to filter metrics from CloudWatch
