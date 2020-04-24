@@ -22,7 +22,7 @@ exports.handler = async (event) => {
     requestWasSuccessful=false
   }
   
-  const endTime = timeInMs()
+  endTime = timeInMs()
 
   await cloudwatch.putMetricData({
     MetricName: 'Success',
