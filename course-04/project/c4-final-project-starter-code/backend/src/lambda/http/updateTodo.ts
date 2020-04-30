@@ -26,6 +26,9 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       body: ''
     }
   } catch(e) {
+    logger.info(e, {
+      key: 'updateTodos'
+    })
     return {
       headers: {
         'Access-Control-Allow-Origin': '*',

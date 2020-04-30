@@ -29,6 +29,9 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     logger.info('--Failed to delete TODO--', {
       key: 'deleteTodo'
     })
+    logger.info(e, {
+      key: 'deleteTodo'
+    })
     return {
       headers: {
       'Access-Control-Allow-Origin': '*',
