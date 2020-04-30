@@ -1,25 +1,38 @@
 import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
-import { getAllToDos } from '../../businessLogic/todos';
+import { getTodos } from '../../businessLogic/todos';
+import { getUserId } from '../utils'
+import { createLogger } from '../../utils/logger'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  console.log('Processing event: ', event)
-  
-  const authorization = event.headers.Authorization
-  const split = authorization.split(' ')
-  const jwtToken = split[1]
+  const userId = getUserId(event)
+  const logger = createLogger('getTodos')
 
-  const todos = await getAllToDos(jwtToken)
-  return {
-    statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true
-    },
-    body: JSON.stringify({
-      todos
+  try{
+    const todos = await getTodos(userId)
+    logger.info('--Listing Todos--', {
+      key: 'getTodos'
     })
+    return {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
+      statusCode: 201,
+      body: JSON.stringify({
+        items: todos
+      })
+    }
+  } catch(e) {
+    return {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
+      statusCode: 400,
+      body: ''
+    }
   }
   
 }

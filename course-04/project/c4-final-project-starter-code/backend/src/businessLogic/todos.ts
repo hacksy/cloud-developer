@@ -3,42 +3,47 @@ import * as uuid from 'uuid'
 import { TodoItem } from '../models/TodoItem'
 import { TodoAccess } from '../dataLayer/todosAccess'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
-import { parseUserId } from '../auth/utils'
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
+import { createLogger } from '../utils/logger'
 
-const todoAccess = new TodoAccess()
+const logger = createLogger('todos')
 
-export async function getAllToDos(
-  jwtToken: string
-  ): Promise<TodoItem[]> {
-  const userId = parseUserId(jwtToken)
-  return todoAccess.getAllTodos(userId)
-}
+const todosAccess = new TodoAccess()
 
-export async function deleteToDo(
-    todoId: string,
-   jwtToken: string
-  ): Promise<TodoItem> {
-    const userId = parseUserId(jwtToken)
-    return await todoAccess.deleteToDo(
-      todoId,
-      userId
-    )
- }
-export async function createToDo(
-  createToDoRequest: CreateTodoRequest,
-  jwtToken: string
+export async function createTodo(
+    createTodoRequest: CreateTodoRequest,
+    userId: string
 ): Promise<TodoItem> {
 
-  const todoId = uuid.v4()
-  const userId = parseUserId(jwtToken)
+    const todoId = uuid.v4()
+    logger.info('Creating todo for user', {userId: userId, todoId: todoId})
 
-  return await todoAccess.createTodo({
-    todoId: todoId,
-    createdAt: new Date().toISOString(),
-    done: createToDoRequest.done,
-    attachmentUrl: createToDoRequest.attachmentUrl,
-    name: createToDoRequest.name,
-    dueDate: createToDoRequest.dueDate,
-    userId: userId
-  })
+    return await todosAccess.createTodo({
+        todoId: todoId,
+        userId: userId,
+        name: createTodoRequest.name,
+        dueDate: createTodoRequest.dueDate,
+        createdAt: new Date().toISOString(),
+        done: false
+    })
 }
+
+export async function deleteTodo(userId: string, todoId: string){
+    logger.info('Deleting todo for user', {userId: userId, todoId: todoId})
+    return await todosAccess.deleteTodo(userId, todoId)
+}
+
+export async function getTodos(userId: string){
+    logger.info('Getting todos for user ', {userId: userId})
+    return await todosAccess.getTodos(userId)
+}
+
+export async function updateTodo(
+    userId: string,
+    todoId: string,
+    updatedTodoRequest: UpdateTodoRequest
+  ) {
+    logger.info('Sending TODO Update Request', {userId: userId, todoId: todoId})
+    return await todosAccess.updateTodo(userId, todoId, updatedTodoRequest)
+  }
+

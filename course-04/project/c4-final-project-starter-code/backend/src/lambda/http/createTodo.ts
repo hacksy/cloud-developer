@@ -1,27 +1,49 @@
 import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
-
+import { getUserId } from '../utils'
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
-import { createToDo } from '../../businessLogic/todos'
+import { createTodo } from '../../businessLogic/todos'
+import { createLogger } from '../../utils/logger'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  console.log('Processing event: ', event)
-  const newTodo: CreateTodoRequest = JSON.parse(event.body)
 
-  const authorization = event.headers.Authorization
-  const split = authorization.split(' ')
-  const jwtToken = split[1]
-
-  const newItem = await createToDo(newTodo, jwtToken)
-  return {
-    statusCode: 201,
-    headers: {
+  const newTodo : CreateTodoRequest = JSON.parse(event.body)
+  const userId = getUserId(event)
+  const logger = createLogger('createTodo')
+  logger.info('--Init Create TODO--', {
+    key: 'createTodo'
+  })
+  logger.info('--Trying to Create TODO--', {
+    key: 'createTodo'
+  })
+  try{
+    const newItem = await createTodo(newTodo, userId)
+    logger.info('--TODO Created--', {
+      key: 'createTodo'
+    })
+    return {
+      headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
-    },
-    body: JSON.stringify({
-      newItem
+      },
+      statusCode: 201,
+      body: JSON.stringify({
+        item: newItem
+      })
+    }
+  } catch(e) {
+    logger.info('--TODO Failed--', {
+      key: 'createTodo'
     })
+    return {
+      headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true
+      },
+      statusCode: 400,
+      body: ''
+    }
   }
+  
 }

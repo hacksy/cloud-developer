@@ -11,16 +11,7 @@
     },
     "done": {
       "type": "boolean"
-    },
-    "attachmentUrl": {
-      "type": "string"
     }
   },
-  "optional": [
-    "name",
-    "dueDate",
-    "done",
-    "attachmentUrl"
-  ],
   "additionalProperties": false
 }
